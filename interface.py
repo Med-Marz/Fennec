@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 from threading import Thread
-from assistant import is_online, generate_text_response, text_to_speech
+from assistant import generate_text_response, text_to_speech
 
 class Ui_MainWindow(object):
     def __init__(self):
@@ -55,9 +55,6 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Send"))
 
     def generate_response(self):
-        if self.thread:
-            self.thread.join()
-            QtCore.QMetaObject.invokeMethod(self, "process_response", QtCore.Qt.QueuedConnection, QtCore.Q_ARG(str, user_input))
         # Get user input
         user_input = self.lineEdit.text()
 
@@ -70,12 +67,12 @@ class Ui_MainWindow(object):
         response = generate_text_response(user_input)
 
         # Display response in text edit widget
-        self.textEdit.append("You: " + user_input)
-        self.textEdit.append("Assistant: " + response)
+        QtCore.QMetaObject.invokeMethod(self.textEdit, "append", QtCore.Qt.QueuedConnection, QtCore.Q_ARG(str, "You: " + user_input))
+        QtCore.QMetaObject.invokeMethod(self.textEdit, "append", QtCore.Qt.QueuedConnection, QtCore.Q_ARG(str, "Assistant: " + response))
         self.lineEdit.clear()
 
         # Call text_to_speech function to convert response to speech
-        # text_to_speech(response)
+        text_to_speech(response)
 
 class MyMainWindow(QtWidgets.QMainWindow):
     def __init__(self):
