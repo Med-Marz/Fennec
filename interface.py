@@ -66,10 +66,7 @@ class Ui_MainWindow(object):
         self.thread.start()
 
     def process_response(self, user_input):
-        # Check internet connectivity
-        online = is_online()
-
-        # Generate response based on online/offline status
+        # Generate response
         response = generate_text_response(user_input)
 
         # Display response in text edit widget
@@ -77,9 +74,8 @@ class Ui_MainWindow(object):
         self.textEdit.append("Assistant: " + response)
         self.lineEdit.clear()
 
-        if online:
-            # Call text_to_speech function to convert response to speech
-            text_to_speech(response)  # Call text_to_speech function with the response
+        # Call text_to_speech function to convert response to speech
+        # text_to_speech(response)
 
 class MyMainWindow(QtWidgets.QMainWindow):
     def __init__(self):
