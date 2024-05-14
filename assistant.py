@@ -1,10 +1,14 @@
 import requests
 import json
 import os
+import subprocess
 from requests.exceptions import ConnectionError
 from pytgpt.phind import PHIND
 from threading import Thread
 from speech import text_to_speech  # Importing the text_to_speech function
+
+with open("/etc/os-release") as f:
+    os_release = f.read()
 
 # Define the path to the cache file
 CACHE_FILE = "cache.json"
@@ -65,7 +69,18 @@ def send_ollama_request(prompt):
         return f"Error: {e}"
 
 
-default_prompt = "You are an assistant running on PRETTY_NAME='Ubuntu 23.10'. Keep the answers brief and short unless asked by the user to explain more. Here's what the user asked {}"
+default_prompt = f"You are an assistant running on linux with the content of /etc/os-release as follows: `{os_release}`. Keep the answers brief and short unless asked by the user to explain more. Here's what the user asked"
+default_prompt += ' "{}". '
+default_prompt += """
+You are strickly allowed to respond with one line that ether starts with "/execute_command" or "/respond_user".
+In the case where you will respond to a user (e.g. asking what a command does), use /repond_user.
+In the case of a user gives an order that you can do using a command (e.g. decrease luminosity) respond only with the command prefixed with `/execute_command`, in this case response strictly in this format (without the backquotes) `/execute_command 'command' 'arg1' .`.
+here's a list of examples of what the user might ask:
+- a decrease in luminosity, where you respond with `/execute_command brightnessctl set 5%-
+- a reminder after 5 minutes, where you respond with `/execute_command sleep 300 && echo "5 minutes have passed" | festival --tts
+
+note: if a user asks "set a reminder after 20 seconds" or provided any order, you are strictly allowed to respond using /execute_command and nothing else.
+"""
 
 
 # Function to save the cache to cache.json
@@ -107,15 +122,21 @@ def generate_offline_response(prompt):
 
 
 # Function to generate response based on online/offline status
-def generate_text_response(prompt):
+def generate_text_response(user_input):
+    prompt = default_prompt.format(user_input)
     if is_online():
         response = generate_online_response(prompt)
-        Thread(target=text_to_speech, args=(response,)).start()
-        return response
     else:
         response = generate_offline_response(prompt)
-        Thread(target=text_to_speech, args=(response,)).start()
-        return response
+
+    response = response.replace("/respond_user ", "")
+    if response.startswith("/execute_command"):
+        cmd = response.replace("/execute_command ", "")
+        subprocess.run(["bash", "-c", cmd])
+        return f"Command {cmd} executed"
+
+    Thread(target=text_to_speech, args=(response,)).start()
+    return response
 
 
 # Main function for interaction
@@ -127,7 +148,7 @@ def main():
             print("Goodbye!")
             break
         else:
-            response = generate_text_response(default_prompt.format(user_input))
+            response = generate_text_response(user_input)
             print("Assistant:", response)
 
 
