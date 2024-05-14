@@ -1,7 +1,8 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import sys
 from threading import Thread
 from assistant import generate_text_response, text_to_speech
+
 
 class Ui_MainWindow(object):
     def __init__(self):
@@ -24,9 +25,13 @@ class Ui_MainWindow(object):
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 319, 349))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.textEdit = QtWidgets.QTextEdit(self.scrollAreaWidgetContents)  # Add textEdit attribute
-        self.textEdit.setGeometry(QtCore.QRect(0, 0, 321, 351))            # Add textEdit attribute
-        self.textEdit.setObjectName("textEdit")                             # Add textEdit attribute
+        self.textEdit = QtWidgets.QTextEdit(
+            self.scrollAreaWidgetContents
+        )  # Add textEdit attribute
+        self.textEdit.setGeometry(
+            QtCore.QRect(0, 0, 321, 351)
+        )  # Add textEdit attribute
+        self.textEdit.setObjectName("textEdit")  # Add textEdit attribute
         self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
         self.lineEdit.setGeometry(QtCore.QRect(0, 370, 231, 31))
         self.lineEdit.setObjectName("lineEdit")
@@ -67,18 +72,30 @@ class Ui_MainWindow(object):
         response = generate_text_response(user_input)
 
         # Display response in text edit widget
-        QtCore.QMetaObject.invokeMethod(self.textEdit, "append", QtCore.Qt.QueuedConnection, QtCore.Q_ARG(str, "You: " + user_input))
-        QtCore.QMetaObject.invokeMethod(self.textEdit, "append", QtCore.Qt.QueuedConnection, QtCore.Q_ARG(str, "Assistant: " + response))
+        QtCore.QMetaObject.invokeMethod(
+            self.textEdit,
+            "append",
+            QtCore.Qt.QueuedConnection,
+            QtCore.Q_ARG(str, "You: " + user_input),
+        )
+        QtCore.QMetaObject.invokeMethod(
+            self.textEdit,
+            "append",
+            QtCore.Qt.QueuedConnection,
+            QtCore.Q_ARG(str, "Assistant: " + response),
+        )
         self.lineEdit.clear()
 
         # Call text_to_speech function to convert response to speech
         text_to_speech(response)
+
 
 class MyMainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

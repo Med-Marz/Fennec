@@ -22,6 +22,7 @@ else:
 # Initialize conversation history list
 history = []
 
+
 # Function to check internet connectivity
 def is_online():
     try:
@@ -29,6 +30,7 @@ def is_online():
         return True
     except ConnectionError:
         return False
+
 
 # Function to send request to Ollama
 def send_ollama_request(prompt):
@@ -49,7 +51,7 @@ def send_ollama_request(prompt):
             json_data = json.loads(data.decode())
             if "message" in json_data and json_data["message"]:
                 total_response += json_data["message"]["content"]
-            if json_data['done'] == True:
+            if json_data["done"]:
                 break
         if total_response:
             # Append the assistant prompt to the conversation history
@@ -65,13 +67,16 @@ def send_ollama_request(prompt):
 
 default_prompt = "You are an assistant running on PRETTY_NAME='Ubuntu 23.10'. Keep the answers brief and short unless asked by the user to explain more. Here's what the user asked {}"
 
+
 # Function to save the cache to cache.json
 def save_cache():
     with open("cache.json", "w") as file:
         json.dump(response_cache, file)
 
+
 # Initialize PHIND chatbot
 bot = PHIND()
+
 
 # Function to generate text response using PHIND
 def generate_online_response(prompt):
@@ -81,8 +86,9 @@ def generate_online_response(prompt):
     else:
         response = bot.chat(prompt)
         response_cache[prompt] = response  # Cache the response
-        save_cache() # Save the cache
+        save_cache()  # Save the cache
         return response
+
 
 # Function to generate text response using OpenChat
 def generate_offline_response(prompt):
@@ -91,13 +97,14 @@ def generate_offline_response(prompt):
         return response_cache[prompt]
     else:
         response = send_ollama_request(prompt)
-        
+
         # Append the assistant response to the conversation history
         history.append({"role": "assistant", "content": response})
-        
+
         response_cache[prompt] = response  # Cache the response
-        save_cache() # Save the cache
+        save_cache()  # Save the cache
         return response
+
 
 # Function to generate response based on online/offline status
 def generate_text_response(prompt):
@@ -109,6 +116,7 @@ def generate_text_response(prompt):
         response = generate_offline_response(prompt)
         Thread(target=text_to_speech, args=(response,)).start()
         return response
+
 
 # Main function for interaction
 def main():
