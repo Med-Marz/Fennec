@@ -71,18 +71,31 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.thread.start()
 
     def process_response(self, user_input):
-        # Generate response
-
         # Display response in text edit widget
-        self.textEdit.append("You: " + user_input)
-        self.textEdit.append("Assistant: Loading...")
+        QtCore.QMetaObject.invokeMethod(
+            self.textEdit,
+            "append",
+            QtCore.Qt.QueuedConnection,
+            QtCore.Q_ARG(str, "You: " + user_input),
+        )
 
-        #
+        QtCore.QMetaObject.invokeMethod(
+            self.textEdit,
+            "append",
+            QtCore.Qt.QueuedConnection,
+            QtCore.Q_ARG(str, "Assistant: Loading..."),
+        )
+
+        # Generate response
         response = generate_text_response(user_input)
-        # Clear textEdit content - clear loading
         self.textEdit.undo()
-        self.textEdit.append("Assistant: " + response)
 
+        QtCore.QMetaObject.invokeMethod(
+            self.textEdit,
+            "append",
+            QtCore.Qt.QueuedConnection,
+            QtCore.Q_ARG(str, "Assistant: " + response),
+        )
         self.lineEdit.clear()
 
         # Call text_to_speech function to convert response to speech
