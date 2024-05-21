@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtWidgets, uic
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import sys
 from threading import Thread
 from assistant import generate_text_response, text_to_speech
@@ -13,6 +13,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupUi(self, MainWindow):
         # Load UI file
         uic.loadUi("interface.ui", self)
+
+        # Create a QFont object with the desired size
+        large_font = QtGui.QFont()
+        large_font.setPointSize(
+            17
+        )  # Set the font size (change the number to the desired size)
+
+        # Set the font for all relevant widgets
+        self.setFont(large_font)
+
         # Find and resize the scrollArea
         scroll_area = self.findChild(QtWidgets.QScrollArea, "scrollArea")
         if scroll_area:
@@ -31,8 +41,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         text_edit = self.findChild(QtWidgets.QTextEdit, "textEdit")
         if text_edit:
             text_edit.resize(1200, 1000)  # Set desired width and height
+            text_edit.setFont(large_font)  # Set the font for the text edit
         else:
             print("TextEdit not found")
+
+        # Set font for other widgets
+        self.lineEdit.setFont(large_font)
 
         # Connect button click event to generate response
         self.pushButton.clicked.connect(self.generate_response)
