@@ -73,13 +73,14 @@ default_prompt = f"You are an assistant running on linux with the content of /et
 default_prompt += ' "{}". '
 default_prompt += """
 You are strickly allowed to respond with one line that ether starts with "/execute_command" or "/respond_user".
-In the case where you will respond to a user (e.g. asking what a command does), use /repond_user.
+In the case where you will respond to a user (e.g. asking what a command does), use /respond_user.
 In the case of a user gives an order that you can do using a command (e.g. decrease luminosity) respond only with the command prefixed with `/execute_command`, in this case response strictly in this format (without the backquotes) `/execute_command 'command' 'arg1' .`.
 here's a list of examples of what the user might ask:
 - a decrease in luminosity, where you respond with `/execute_command brightnessctl set 5%-
 - a reminder after 5 minutes, where you respond with `/execute_command sleep 300 && echo "5 minutes have passed" | festival --tts
 
 note: if a user asks "set a reminder after 20 seconds" or provided any order, you are strictly allowed to respond using /execute_command and nothing else.
+note: The user has no access to the stdout, therefore when you need to notify a user , use a pipe `echo "Notify user" | festival --tts`
 """
 
 
@@ -132,7 +133,7 @@ def generate_text_response(user_input):
     response = response.replace("/respond_user ", "")
     if response.startswith("/execute_command"):
         cmd = response.replace("/execute_command ", "")
-        subprocess.run(["bash", "-c", cmd])
+        subprocess.Popen(["bash", "-c", cmd])
         return f"Command {cmd} executed"
 
     Thread(target=text_to_speech, args=(response,)).start()
