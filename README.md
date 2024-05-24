@@ -2,7 +2,7 @@
 The open source virtual assistant for Debian-based GNU/Linux distributions.
 
 # Installation
-To run Dragonfire on your desktop, download the latest [release](https://github.com/Med-Marz/Fennec/releases/tag/fennec-v1.0.0) (the .deb file) and install as follows:
+To run Fennec on your desktop, download the latest [release](https://github.com/Med-Marz/Fennec/releases/tag/fennec-v1.0.0) (the .deb file) and install as follows:
 ```
 sudo apt install ./fennec-1.0.deb
 ```
