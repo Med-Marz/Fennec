@@ -1,4 +1,5 @@
-![fennec](https://github.com/user-attachments/assets/17044301-f4b5-4f99-b5bf-52d3656b40e1)# Fennec
+![fennec](https://github.com/user-attachments/assets/17044301-f4b5-4f99-b5bf-52d3656b40e1)
+# Fennec
 The open source virtual assistant for Debian-based GNU/Linux distributions.
 ![U<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
@@ -7,7 +8,7 @@ The open source virtual assistant for Debian-based GNU/Linux distributions.
  width="512pt" height="512pt" viewBox="0 0 512.000000 512.000000"
  preserveAspectRatio="xMidYMid meet">
 
-<g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+<g transform="translate(0.000000,512) scale(0.100000,-0.100000)"
 fill="#000000" stroke="none">
 <path d="M116 5012 c-3 -5 -10 -46 -15 -93 -82 -677 12 -1532 232 -2109 110
 -288 145 -343 278 -440 151 -110 275 -246 349 -382 31 -59 90 -196 90 -212 0
